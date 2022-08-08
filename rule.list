@@ -45,7 +45,7 @@ address=/mtalk.google.com/108.177.125.188
 # static=NetEaseMusic, direct, proxy, server-tag-regex=(?=.*(music|𝐌𝐮𝐬𝐢𝐜|Unbolck|网易云|云音乐|Music|Netease|🎶|解锁)), img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netease_Music.png
 static=YouTube, 延迟最低, direct, 🇭🇰Hong Kong, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, 🇸🇬Singapore, 🇺🇸United States, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
 static=Instagram, 延迟最低, proxy, direct, 🇭🇰Hong Kong, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, 🇸🇬Singapore, 🇺🇸United States, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Instagram.png
-static=Spotify, 延迟最低, direct, proxy, 🇭🇰Hong Kong, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, 🇸🇬Singapore, 🇺🇸United States, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png
+static=Spotify, 延迟最低, direct, proxy, 🇭🇰Hong Kong, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, 🇸🇬Singapore, 🇺🇸United States,Philippines, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png
 static=Telegram, 延迟最低, direct, proxy, 🇭🇰Hong Kong, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, 🇸🇬Singapore, 🇺🇸United States, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
 static=Netflix, 延迟最低, direct, proxy, 🇭🇰Hong Kong, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, 🇸🇬Singapore, 🇺🇸United States, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix_Letter.png
 static=Google, 延迟最低, proxy, direct, 🇭🇰Hong Kong, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, 🇸🇬Singapore, 🇺🇸United States, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png
@@ -72,7 +72,7 @@ url-latency-benchmark=🇯🇵Japan, server-tag-regex=(?=.*(日本|JP|(?i)Japan)
 url-latency-benchmark=🇰🇷Korea, server-tag-regex=(?=.*(韩国|韓國|南朝鲜|KR|(?i)Korean))^((?!(专线|手游|游戏|(?i)IPLC|IEPL|game)).)*$, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Korea.png
 url-latency-benchmark=🇸🇬Singapore, server-tag-regex=(?=.*(新加坡|狮城|SG|(?i)Singapore))^((?!(专线|手游|游戏|(?i)IPLC|IEPL|game)).)*$, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
 url-latency-benchmark=🇺🇸United States, server-tag-regex=(?=.*(美国|美國|US|(?i)States|American))^((?!(专线|手游|游戏|网易云|云音乐|🎶(?i)IPLC|IEPL|game|music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Music|Netease)).)*$, check-interval=1800, tolerance=0, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
-url-latency-benchmark=菲律宾, server-tag-regex=(?=.*(菲律宾|菲|ph|(?i)Philippines))^((?!(专线|手游|游戏|(?i)IPLC|IEPL|game)).)*$, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Philippines.png
+url-latency-benchmark=Philippines, server-tag-regex=(?=.*(菲律宾|菲|ph|(?i)Philippines))^((?!(专线|手游|游戏|(?i)IPLC|IEPL|game)).)*$, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Philippines.png
 
 [server_local]
 # 本地服务器部分, 自行添加即可
