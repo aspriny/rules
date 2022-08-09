@@ -73,7 +73,7 @@ url-latency-benchmark=🇸🇬Singapore, server-tag-regex=(?=.*(新加坡|狮城
 url-latency-benchmark=🇺🇸United States, server-tag-regex=(?=.*(美国|美國|US|(?i)States|American))^((?!(专线|手游|游戏|网易云|云音乐|🎶(?i)IPLC|IEPL|game|music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Music|Netease)).)*$, check-interval=1800, tolerance=0, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
 url-latency-benchmark=🇵🇭Philippines, server-tag-regex=(?=.*(菲律宾|菲|ph|(?i)Philippines))^((?!(专线|手游|游戏|(?i)IPLC|IEPL|game)).)*$, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Philippines.png
 url-latency-benchmark=延迟最低, server-tag-regex=^((?!(music|𝐌𝐮𝐬𝐢𝐜|Unbolck|网易云|云音乐|Music|Netease|🎶|专线|手游|游戏|(?i)IPLC|IEPL|game)).)*$, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
-static=所有节点, server-tag-regex=, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
+static=所有节点, server-tag-regex=*, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
 
 [server_local]
 # 本地服务器部分, 自行添加即可
