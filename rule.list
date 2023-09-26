@@ -1,5 +1,4 @@
-; “;” “#”为注释符号，去掉此类符号，该行才会生效。
-;update:2023-09-26
+#update:2023-09-26
 
 [general]
 excluded_routes=192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 100.64.0.0/10, 17.0.0.0/8
@@ -36,16 +35,16 @@ server=/*.xiaomi.com/119.29.29.29
 address=/mtalk.google.com/108.177.125.188
 
 [policy]
-static=YouTube, direct, 🇭🇰Hong Kong,🇺🇸United States, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, 🇸🇬Singapore, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
-static=Telegram,  direct, proxy, 🇭🇰Hong Kong, 🇸🇬Singapore, 🇺🇸United States, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
-static=Netflix,  direct, proxy, 🇭🇰Hong Kong, 🇸🇬Singapore, 🇺🇸United States, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
-static=Instagram,  proxy, direct, 🇭🇰Hong Kong, 🇺🇸United States, 🇸🇬Singapore, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Instagram.png
-static=国外流媒体,  proxy, direct, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
+static=YouTube, proxy, 🇭🇰Hong Kong,🇺🇸United States, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, 🇸🇬Singapore, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
+static=Telegram, proxy, 🇭🇰Hong Kong, 🇸🇬Singapore, 🇺🇸United States, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
+static=Netflix, proxy, 🇭🇰Hong Kong, 🇸🇬Singapore, 🇺🇸United States, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
+static=Instagram, proxy, 🇭🇰Hong Kong, 🇺🇸United States, 🇸🇬Singapore, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Instagram.png
+static=国外流媒体, proxy, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
 static=OpenAI, proxy, 🇺🇸United States, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png
 static=漏网之鱼, direct, proxy, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png
 static=TikTok, direct, proxy, 🇺🇸United States, 🇯🇵Japan, 🇨🇳Taiwan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok_1.png
-static=Google, proxy, direct, 🇭🇰Hong Kong, 🇸🇬Singapore, 🇺🇸United States, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png
-static=Steam,  direct, proxy, 🇭🇰Hong Kong, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png
+static=Google, direct, proxy, 🇭🇰Hong Kong, 🇸🇬Singapore, 🇺🇸United States, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png
+static=Steam, direct, proxy, 🇭🇰Hong Kong, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png
 static=Apple, direct, proxy, 🇺🇸United States, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png
 static=Microsoft, direct, proxy, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png
 static=Speedtest, direct, proxy, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Speedtest.png
@@ -64,7 +63,6 @@ static=🇵🇭Philippines, server-tag-regex=(?=.*(菲律宾|菲|ph|(?i)Philippi
 [server_remote]
 
 # 节点远程订阅
-# https://cdn.jsdelivr.net/gh/yawenchim/QuantumultX-mix@master/unlock/NeteaseUnlock.list, tag=网易云解锁灰色音乐, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Netease_Music_Unlock.png, update-interval=86400, opt-parser=true, enabled=true
 
 [filter_remote]
 # 远程分流规则策略组
