@@ -1,5 +1,5 @@
 ; “;” “#”为注释符号，去掉此类符号，该行才会生效。
-;update:2022-08-08
+;update:2023-09-26
 
 [general]
 excluded_routes=192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 100.64.0.0/10, 17.0.0.0/8
@@ -48,7 +48,7 @@ static=Steam,  direct, proxy, 🇭🇰Hong Kong, img-url=https://cdn.jsdelivr.ne
 static=Apple, direct, proxy, 🇺🇸United States, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png
 static=Microsoft, direct, proxy, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png
 static=Speedtest, direct, proxy, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Speedtest.png
-static=Spotify, 延迟最低, direct, proxy, 🇭🇰Hong Kong, 🇸🇬Singapore, 🇺🇸United States,🇵🇭Philippines, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png
+static=Spotify, direct, proxy, 🇭🇰Hong Kong, 🇸🇬Singapore, 🇺🇸United States,🇵🇭Philippines, 🇨🇳Taiwan, 🇯🇵Japan, 🇰🇷Korea, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png
 static=🇭🇰Hong Kong, server-tag-regex=(?=.*(香港|HK|(?i)Hong))^((?!(专线|手游|游戏|(?i)IPLC|IEPL|game)).)*$, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png
 static=🇨🇳Taiwan, server-tag-regex=(?=.*(台湾|台灣|TW|(?i)Taiwan))^((?!(专线|手游|游戏|(?i)IPLC|IEPL|game)).)*$, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png
 static=🇯🇵Japan, server-tag-regex=(?=.*(日本|JP|(?i)Japan))^((?!(专线|手游|游戏|(?i)IPLC|IEPL|game)).)*$, check-interval=1800, tolerance=10, img-url=https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
