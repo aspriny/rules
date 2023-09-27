@@ -1,8 +1,5 @@
-# NAME: OpenAI
-#tkg
-# UPDATED: 2023-09-27
+# OpenAI
 
-#openai
 HOST-SUFFIX,openai.com,OpenAI
 HOST-SUFFIX,ai.com,OpenAI
 HOST-SUFFIX,auth0.com,OpenAI
@@ -18,8 +15,8 @@ HOST-SUFFIX,sentry.io,OpenAI
 HOST-SUFFIX,stripe.com,OpenAI
 HOST-KEYWORD,openai,OpenAI
 
-#bard
+# Bard
 DOMAIN,bard.google.com,OpenAI
 
-#claude
+# Claude
 HOST-KEYWORD,claude,OpenAI
