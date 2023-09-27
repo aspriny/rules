@@ -14,6 +14,8 @@ HOST-SUFFIX,poe.com,OpenAI
 HOST-SUFFIX,sentry.io,OpenAI
 HOST-SUFFIX,stripe.com,OpenAI
 HOST-KEYWORD,openai,OpenAI
+DOMAIN,api.statsig.com,OpenAI
+DOMAIN,ios.chat.openai.com,OpenAI
 
 # Bard
 DOMAIN,bard.google.com,OpenAI
