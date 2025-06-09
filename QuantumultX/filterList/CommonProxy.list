@@ -3,4 +3,4 @@
 HOST-SUFFIX,v2ex.com,CommonProxy
 
 # linux.do
-HOST-SUFFIX,linux.do,CommonDirect
+HOST-SUFFIX,linux.do,CommonProxy
