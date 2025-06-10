@@ -1,6 +1,4 @@
 # NAME: CommonProxy
 
 HOST-SUFFIX,v2ex.com,CommonProxy
-
-# linux.do
 HOST-SUFFIX,linux.do,CommonProxy
