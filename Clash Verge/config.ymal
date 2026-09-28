@@ -1,226 +1,167 @@
+// Clash Verge JavaScript 覆写脚本（不是静态 YAML）
 function main(params) {
+  const icons = "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/";
+  const nodeNames = [...new Set((params.proxies || []).map(proxy => proxy.name))];
+  const providerNames = Object.keys(params["proxy-providers"] || {});
+  const nodes = nodeNames.length ? nodeNames : (providerNames.length ? [] : ["DIRECT"]);
 
-  // 创建代理组的辅助函数
-  function createProxyGroup(name, type, icon, proxies) {
+  function group(name, icon, options = []) {
     return {
       name,
-      type,
-      url: "http://www.gstatic.com/generate_204",
-      icon,
-      interval: 300,
-      tolerance: type === "url-test" ? 20 : undefined,
-      timeout: type === "url-test" ? 2000 : undefined,
-      lazy: true,
-      proxies: proxies.length > 0 ? proxies : ["DIRECT"],
-      strategy: type === "load-balance" ? "consistent-hashing" : undefined
+      type: "select",
+      icon: icons + icon + ".png",
+      proxies: [...new Set([...options, ...nodes])],
+      ...(providerNames.length ? { use: providerNames } : {})
     };
   }
 
-  // 通过正则过滤节点
-  function getProxiesByRegex(params, regex) {
-    return params.proxies
-      .filter(e => regex.test(e.name))
-      .map(e => e.name);
+  // QuantumultX 的 proxy 对应 Proxy，server-tag-regex=.* 对应所有节点。
+  const groups = [
+    group("Proxy", "Proxy"),
+    group("Manual", "Available", ["Proxy"])
+  ];
+  const serviceGroups = [
+    ["YouTube", "YouTube"], ["Telegram", "Telegram"],
+    ["Streaming", "Streaming"], ["Instagram", "Instagram"],
+    ["OpenAI", "Bot"], ["TikTok", "TikTok_1", true],
+    ["Emby", "Emby", true], ["EmbyVip", "Emby", true],
+    ["CommonDirect", "China", true], ["CommonProxy", "Global", true],
+    ["漏网之鱼", "Final", true], ["Google", "Google_Search", true],
+    ["Apple", "Apple", true], ["Microsoft", "Microsoft", true],
+    ["Speedtest", "Speedtest", true], ["Spotify", "Spotify", true],
+    ["GameDownloadCN", "Steam", true], ["Game", "Steam", true]
+  ];
+  for (const [name, icon, direct] of serviceGroups) {
+    groups.push(group(name, icon, [...(direct ? ["DIRECT"] : []), "Proxy", "Manual"]));
   }
 
-  // 1. 定义区域自动分组
+  // 与 QuantumultX 的启用地区分组对应；没有匹配节点时不创建空组。
   const regions = [
-    { name: "HongKong", type: "select", regex: /香港|HK|hk|Hong|🇭🇰/, icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Hong_Kong.png" },
-    { name: "TaiWan", type: "select", regex: /台湾|TW|Taiwan|Wan|🇨🇳|🇹🇼/, icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Taiwan.png" },
-    { name: "Singapore", type: "select", regex: /新加坡|狮城|SG|sg|Singapore|🇸🇬/, icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Singapore.png" },
-    { name: "Japan", type: "select", regex: /日本|JP|jp|Japan|🇯🇵/, icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Japan.png" },
-    { name: "America", type: "select", regex: /美国|US|us|United States|America|🇺🇸/, icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/United_States.png" },
-    { name: "Auto", regex: /^(?!.*(?:自动|故障|流量|官网|套餐|机场|订阅|年|月|失联|频道)).*$/, icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Auto.png", type: "url-test" },
-    { name: "Fallback", regex: /^(?!.*(?:自动|故障|流量|官网|套餐|机场|订阅|年|月|失联|频道)).*$/, icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Bypass.png", type: "fallback" }
+    ["🇭🇰Hong Kong", /香港|HK|Hong|🇭🇰/i, "Hong_Kong"],
+    ["🇯🇵Japan", /日本|JP|Japan|🇯🇵/i, "Japan"],
+    ["🇸🇬Singapore", /新加坡|狮城|SG|legend|Singapore|🇸🇬/i, "Singapore"],
+    ["🇺🇸United States", /美国|美國|US|dcc|States|American|🇺🇸/i, "United_States"],
+    ["🇮🇳India", /印度|IN|dzire|India|🇮🇳/i, "India"],
+    ["🇩🇪Germany", /德国|德|DE|netcup|Germany|🇩🇪/i, "Germany"],
+    ["🇬🇧United Kingdom", /英国|英|UK|United Kingdom|🇬🇧/i, "United_Kingdom"],
+    ["🇳🇱Netherlands", /荷兰|荷|NL|ams|Netherlands|🇳🇱/i, "Netherlands"]
   ];
+  for (const [name, regex, icon] of regions) {
+    const matched = nodeNames.filter(node => regex.test(node) && !/专线|手游|游戏|IPLC|IEPL|game/i.test(node));
+    if (matched.length) groups.push({ name, type: "select", icon: icons + icon + ".png", proxies: matched });
+  }
+  params["proxy-groups"] = groups;
 
-  const proxyGroups = regions.map(region =>
-    createProxyGroup(region.name, region.type || "url-test", region.icon, getProxiesByRegex(params, region.regex))
-  );
+  // QX 的远程 filter_remote 改为 Clash classical rule-provider。
+  const base = "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/";
+  const providerPaths = {
+    Lan: "Lan/Lan", GameDownloadCN: "Game/GameDownloadCN/GameDownloadCN", Game: "Game/Game",
+    TikTok: "TikTok/TikTok", YouTube: "YouTube/YouTube", Telegram: "Telegram/Telegram",
+    Netflix: "Netflix/Netflix", PrimeVideo: "PrimeVideo/PrimeVideo", Disney: "Disney/Disney",
+    HBO: "HBO/HBO", Hulu: "Hulu/Hulu", AppleTV: "AppleTV/AppleTV",
+    ParamountPlus: "ParamountPlus/ParamountPlus", Peacock: "Peacock/Peacock",
+    DiscoveryPlus: "DiscoveryPlus/DiscoveryPlus", Instagram: "Instagram/Instagram",
+    Google: "Google/Google", Apple: "Apple/Apple", Microsoft: "Microsoft/Microsoft",
+    Speedtest: "Speedtest/Speedtest", Spotify: "Spotify/Spotify",
+    OpenAI: "OpenAI/OpenAI", Claude: "Claude/Claude", Gemini: "Gemini/Gemini",
+    China: "China/China", ChinaIPs: "ChinaIPs/ChinaIPs_Classical", Global: "Global/Global"
+  };
+  params["rule-providers"] = Object.fromEntries(Object.entries(providerPaths).map(([name, path]) => [name, {
+    type: "http", behavior: "classical", format: "yaml", interval: 86400,
+    path: "./ruleset/" + name + ".yaml", url: base + path + ".yaml"
+  }]));
 
-  // 获取所有节点列表供 Manual 和 Proxy 使用
-  const allProxies = [...new Set(proxyGroups.flatMap(g => g.proxies))];
-
-  // 2. 预定义策略组
-  const predefinedGroups = [
-    { name: "Proxy", type: "select", proxies: allProxies, icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Proxy.png" },
-    { name: "Manual", type: "select", proxies: allProxies, icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Proxy.png" },
-    { name: "AI", type: "select", proxies: ["Proxy", "Manual", "America", "Japan", "Singapore", "TaiWan", "HongKong"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ChatGPT.png" },
-    { name: "YouTube", type: "select", proxies: ["Proxy", "Manual", "Auto", "Balance", "Fallback", "HongKong", "TaiWan", "Singapore", "Japan", "America"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/YouTube.png" },
-    { name: "Telegram", type: "select", proxies: ["Proxy", "Manual", "Auto", "Balance", "Fallback", "HongKong", "TaiWan", "Singapore", "Japan", "America"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Telegram.png" },
-    { name: "Google", type: "select", proxies: ["Proxy", "Manual", "Auto", "Balance", "Fallback", "HongKong", "TaiWan", "Singapore", "Japan", "America"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Google.png" },
-    { name: "Streaming", type: "select", proxies: ["Proxy", "Manual", "Auto", "Balance", "Fallback", "HongKong", "TaiWan", "Singapore", "Japan", "America"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/ForeignMedia.png" },
-    { name: "Emby", type: "select", proxies: ["DIRECT", "Proxy", "Manual", "America", "Japan", "Singapore", "TaiWan", "HongKong"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Emby.png" },
-    { name: "EmbyVIP", type: "select", proxies: ["DIRECT", "Proxy", "Manual", "America", "Japan", "Singapore", "TaiWan", "HongKong"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Emby.png" },
-
-    { name: "BiliBili", type: "select", proxies: ["DIRECT", "HongKong", "TaiWan"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/bilibili.png" },
-    { name: "Games", type: "select", proxies: ["Proxy", "Manual",  "Auto", "Balance", "Fallback", "HongKong", "TaiWan", "Singapore", "Japan", "America"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Game.png" },
-    { name: "Mainland", type: "select", proxies: ["DIRECT", "Proxy", "Auto", "Balance", "Fallback", "HongKong", "TaiWan", "Singapore", "Japan", "America"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Round_Robin.png" },
-    { name: "Global", type: "select", proxies: ["Proxy", "Manual", "Auto", "Balance", "Fallback", "HongKong", "TaiWan", "Singapore", "Japan", "America"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Global.png" },
-    { name: "Final", type: "select", proxies: ["DIRECT", "Manual",  "Global", "Proxy"], icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Final.png" }
-  ];
-
-  params["proxy-groups"] = [...predefinedGroups, ...proxyGroups];
-
-  // 3. 规则设置：移除 GEOSITE，统一改用 blackmatrix7 rule-providers
   params.rules = [
-    "AND,(AND,(DST-PORT,443),(NETWORK,UDP)),(NOT,((GEOIP,CN,no-resolve))),REJECT",
     "RULE-SET,Lan,DIRECT",
+    // 本地例外优先于远程规则；Clash 不支持 QX 的 USER-AGENT 规则。
+    "DOMAIN-SUFFIX,push.apple.com,Manual",
+    "DOMAIN-SUFFIX,akadns.net,Manual",
+    "DOMAIN-KEYWORD,apple.com.edgekey.net,Manual",
+    "IP-CIDR,17.249.0.0/16,Manual,no-resolve",
+    "IP-CIDR,17.252.0.0/16,Manual,no-resolve",
+    "IP-CIDR,17.57.144.0/22,Manual,no-resolve",
+    "IP-CIDR,17.188.128.0/18,Manual,no-resolve",
+    "IP-CIDR,17.188.20.0/23,Manual,no-resolve",
+    "IP-CIDR6,2620:149:a44::/48,Manual,no-resolve",
+    "IP-CIDR6,2403:300:a42::/48,Manual,no-resolve",
+    "IP-CIDR6,2403:300:a51::/48,Manual,no-resolve",
+    "IP-CIDR6,2a01:b740:a42::/48,Manual,no-resolve",
+    "DOMAIN-SUFFIX,91porny.com,Manual",
+    "DOMAIN-KEYWORD,jiuse,Manual",
+    "DOMAIN-SUFFIX,t66y.com,Manual",
     "DOMAIN,emby.oceancloud.asia,Emby",
     "DOMAIN,panel.aemby.de,Emby",
-    "DOMAIN,test.1huanlesap02.top,EmbyVIP",
+    "DOMAIN,test.1huanlesap02.top,EmbyVip",
     "DOMAIN,best.28.al,Emby",
     "DOMAIN,test.startspoint.com,Emby",
-    "DOMAIN-SUFFIX,91porny.com,Manual",
-
-    "RULE-SET,OpenAI,AI",
-    "RULE-SET,Gemini,AI",
-    "RULE-SET,GameDownloadCN,Mainland",
-    "RULE-SET,Game,Games",
-    "RULE-SET,GitHub,Global",
-    "RULE-SET,Telegram,Telegram",
-    "RULE-SET,BiliBili,BiliBili",
+    ...["bitmovin.com", "formula1.com", "opin.media", "formula1.my.site.com",
+      "f1accountprod.report-uri.com", "formula1.my.salesforce-scrt.com", "tiled.media",
+      "mobile-collector.newrelic.com", "f1prodlive.akamaized.net",
+      "d2n9h2wits23hf.cloudfront.net", "f1esports.com", "f1manager.com",
+      "f1play.com", "f1.ascendon.tv"].map(domain => `DOMAIN-SUFFIX,${domain},Manual`),
+    // 自维护列表与 QX 同源；逐条转为 Clash 规则，避免直接加载 QX 语法。
+    "DOMAIN-SUFFIX,emby.wtf,Emby",
+    "DOMAIN-SUFFIX,handoutv.top,EmbyVip",
+    "DOMAIN-SUFFIX,micu.hk,EmbyVip",
+    "DOMAIN-SUFFIX,beebi.org,EmbyVip",
+    "DOMAIN-SUFFIX,rousi.zip,CommonDirect",
+    "DOMAIN-SUFFIX,ptzone.xyz,CommonDirect",
+    "DOMAIN-SUFFIX,v2ex.com,CommonProxy",
+    "DOMAIN-SUFFIX,linux.do,CommonProxy",
+    "IP-CIDR,118.89.204.198/32,REJECT,no-resolve",
+    "DOMAIN,appcloud2.in.zhihu.com,REJECT",
+    "DOMAIN,mqtt.zhihu.com,REJECT",
+    "DOMAIN,sugar.zhihu.com,REJECT",
+    "DOMAIN-SUFFIX,95599.cn,DIRECT",
+    "DOMAIN-SUFFIX,abchina.com,DIRECT",
+    "DOMAIN-SUFFIX,bscabank.com,DIRECT",
+    "DOMAIN-SUFFIX,openaboc.cn,DIRECT",
+    "DOMAIN-SUFFIX,openaboc.com,DIRECT",
+    "DOMAIN-SUFFIX,openaboc.com.cn,DIRECT",
+    "DOMAIN,ad.12306.cn,DIRECT",
+    "DOMAIN,sdkapp.uve.weibo.com,DIRECT",
+    "DOMAIN-KEYWORD,pangolin,REJECT",
+    "DOMAIN-KEYWORD,pglstat,REJECT",
+    "IP-CIDR,180.76.76.200/32,REJECT,no-resolve",
+    "DOMAIN,im.tieba.baidu.com,REJECT",
+    "DOMAIN,d.image.i4.cn,REJECT",
+    "DOMAIN-KEYWORD,adview,REJECT",
+    "DOMAIN-SUFFIX,gdt.qq.com,REJECT",
+    "DOMAIN-SUFFIX,u3.ucweb.com,REJECT",
+    "DOMAIN,amdc.m.taobao.com,REJECT",
+    "DOMAIN,hub5idx.v6.shub.sandai.net,REJECT",
+    "DOMAIN,hub5emu.v6.shub.sandai.net,REJECT",
+    "DOMAIN,hub5btmain.v6.shub.sandai.net,REJECT",
+    "IP-CIDR,203.107.1.0/24,REJECT,no-resolve",
+    "RULE-SET,GameDownloadCN,GameDownloadCN",
+    "RULE-SET,Game,Game",
+    "RULE-SET,TikTok,TikTok",
     "RULE-SET,YouTube,YouTube",
-    "RULE-SET,Disney,Streaming",
-    "RULE-SET,Netflix,Streaming",
+    "RULE-SET,Telegram,Telegram",
+    ...["Netflix", "PrimeVideo", "Disney", "HBO", "Hulu", "AppleTV",
+      "ParamountPlus", "Peacock", "DiscoveryPlus"].map(name => `RULE-SET,${name},Streaming`),
+    "RULE-SET,Instagram,Instagram",
     "RULE-SET,Google,Google",
-    "RULE-SET,twitter,Proxy",
-
-    "DOMAIN-SUFFIX,bitmovin.com,Proxy",
-    "DOMAIN-SUFFIX,formula1.com,Proxy",
-    "DOMAIN-SUFFIX,opin.media,Proxy",
-    "DOMAIN-SUFFIX,formula1.my.site.com,Proxy",
-    "DOMAIN-SUFFIX,f1accountprod.report-uri.com,Proxy",
-    "DOMAIN-SUFFIX,formula1.my.salesforce-scrt.com,Proxy",
-    "DOMAIN-SUFFIX,tiled.media,Proxy",
-    "DOMAIN-SUFFIX,mobile-collector.newrelic.com,Proxy",
-    "DOMAIN-SUFFIX,f1prodlive.akamaized.net,Proxy",
-    "DOMAIN-SUFFIX,d2n9h2wits23hf.cloudfront.net,Proxy",
-    "DOMAIN-SUFFIX,f1esports.com,Proxy",
-    "DOMAIN-SUFFIX,f1manager.com,Proxy",
-    "DOMAIN-SUFFIX,f1play.com,Proxy",
-    "DOMAIN-SUFFIX,f1.ascendon.tv,Proxy",
-    "RULE-SET,China,Mainland",
-    "RULE-SET,ChinaIPs,Mainland,no-resolve",
-    "RULE-SET,Global,Global",
-    "MATCH,Final"
+    "RULE-SET,Apple,Apple",
+    "RULE-SET,Microsoft,Microsoft",
+    "RULE-SET,Speedtest,Speedtest",
+    "RULE-SET,Spotify,Spotify",
+    "RULE-SET,OpenAI,OpenAI",
+    "RULE-SET,Claude,OpenAI",
+    "RULE-SET,Gemini,OpenAI",
+    "IP-CIDR,17.0.0.0/8,DIRECT,no-resolve",
+    "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
+    "IP-CIDR,127.0.0.0/8,DIRECT,no-resolve",
+    "IP-CIDR,172.16.0.0/12,DIRECT,no-resolve",
+    "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
+    "IP-CIDR,224.0.0.0/24,DIRECT,no-resolve",
+    "IP-CIDR,182.254.116.0/24,DIRECT,no-resolve",
+    "IP-CIDR6,fe80::/10,DIRECT,no-resolve",
+    "RULE-SET,China,DIRECT",
+    "RULE-SET,ChinaIPs,DIRECT,no-resolve",
+    "RULE-SET,Global,Proxy",
+    "GEOIP,CN,DIRECT",
+    "MATCH,漏网之鱼"
   ];
-
-  // 4. Rule Providers：blackmatrix7 ios_rule_script，使用完整 GitHub 直链，方便直观维护
-  params["rule-providers"] = {
-    "Lan": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "OpenAI": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "Gemini": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "GameDownloadCN": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/GameDownloadCN/GameDownloadCN.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "Game": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/Game.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "GitHub": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GitHub/GitHub.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "Telegram": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "BiliBili": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "YouTube": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "twitter": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Twitter/Twitter.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "Disney": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Disney/Disney.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "Netflix": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "Google": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "China": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "ChinaIPs": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaIPs/ChinaIPs_Classical.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    },
-    "Global": {
-      "type": "http",
-      "behavior": "classical",
-      "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Global/Global.yaml",
-      "interval": 86400,
-      "format": "yaml"
-    }
-  };
-
   return params;
 }
