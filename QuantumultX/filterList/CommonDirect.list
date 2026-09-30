@@ -4,3 +4,16 @@
 HOST-SUFFIX,rousi.zip,CommonDirect
 HOST-SUFFIX,ptzone.xyz,CommonDirect
 
+# direct
+HOST-SUFFIX,appstorrent.ru,CommonDirect
+HOST-SUFFIX,addthis.com,CommonDirect
+HOST-SUFFIX,steamcontent.com,CommonDirect
+HOST-SUFFIX,steamserver.net,CommonDirect
+
+# emby vip (merged from EmbyVIP.list)
+HOST-SUFFIX,handoutv.top,CommonDirect
+HOST-SUFFIX,handoumedia.top,CommonDirect
+HOST-SUFFIX,micu.hk,CommonDirect
+HOST-SUFFIX,beebi.org,CommonDirect
+HOST-SUFFIX,1huanlesap02.top,CommonDirect
+HOST,test.1huanlesap02.top,CommonDirect

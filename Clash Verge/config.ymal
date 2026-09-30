@@ -15,7 +15,7 @@ function main(params) {
     };
   }
 
-  // QuantumultX 的 proxy 对应 Proxy，server-tag-regex=.* 对应所有节点。
+  // 基础组与细分业务分组（与 Surge / QuantumultX 对齐）
   const groups = [
     group("Proxy", "Proxy"),
     group("Manual", "Available", ["Proxy"])
@@ -25,15 +25,16 @@ function main(params) {
     ["Streaming", "Streaming"], ["Instagram", "Instagram"],
     ["GitHub", "GitHub", true],
     ["OpenAI", "Bot"], ["TikTok", "TikTok_1", true],
-    ["Emby", "Emby", true], ["EmbyVip", "Emby", true],
-    ["CommonDirect", "China", true], ["CommonProxy", "Global", true],
-    ["漏网之鱼", "Final", true], ["Google", "Google_Search", true],
+    ["Emby", "Emby", true],
+    ["Formula1", "Streaming"],
+    ["CommonDirect", "China", true], ["CommonProxy", "Global"],
+    ["漏网之鱼", "Final"], ["Google", "Google_Search", true],
     ["Apple", "Apple", true], ["Microsoft", "Microsoft", true],
     ["Speedtest", "Speedtest", true], ["Spotify", "Spotify", true],
     ["GameDownloadCN", "Steam", true], ["Game", "Steam", true]
   ];
-  for (const [name, icon, direct] of serviceGroups) {
-    groups.push(group(name, icon, [...(direct ? ["DIRECT"] : []), "Proxy", "Manual"]));
+  for (const [name, icon, directFirst] of serviceGroups) {
+    groups.push(group(name, icon, directFirst ? ["DIRECT", "Proxy", "Manual"] : ["Proxy", "Manual", "DIRECT"]));
   }
 
   // 与 QuantumultX 的启用地区分组对应；没有匹配节点时不创建空组。
@@ -53,29 +54,52 @@ function main(params) {
   }
   params["proxy-groups"] = groups;
 
-  // QX 的远程 filter_remote 改为 Clash classical rule-provider。
+  // 统一使用 blackmatrix7 Clash classical rule-provider 与自维护 filterList
   const base = "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/";
+  const customBase = "https://raw.githubusercontent.com/aspriny/rules/refs/heads/main/Clash%20Verge/filterList/";
   const providerPaths = {
-    Lan: "Lan/Lan", GameDownloadCN: "Game/GameDownloadCN/GameDownloadCN", Game: "Game/Game",
-    TikTok: "TikTok/TikTok", YouTube: "YouTube/YouTube", Telegram: "Telegram/Telegram",
-    Netflix: "Netflix/Netflix", PrimeVideo: "PrimeVideo/PrimeVideo", Disney: "Disney/Disney",
-    HBO: "HBO/HBO", Hulu: "Hulu/Hulu", AppleTV: "AppleTV/AppleTV",
-    ParamountPlus: "ParamountPlus/ParamountPlus", Peacock: "Peacock/Peacock",
-    DiscoveryPlus: "DiscoveryPlus/DiscoveryPlus", Instagram: "Instagram/Instagram",
+    Lan: "Lan/Lan",
+    Emby: "Emby/Emby",
+    GameDownloadCN: "Game/GameDownloadCN/GameDownloadCN",
+    Game: "Game/Game",
+    TikTok: "TikTok/TikTok",
+    YouTube: "YouTube/YouTube",
+    Telegram: "Telegram/Telegram",
+    Netflix: "Netflix/Netflix",
+    PrimeVideo: "PrimeVideo/PrimeVideo",
+    Disney: "Disney/Disney",
+    HBO: "HBO/HBO",
+    Hulu: "Hulu/Hulu",
+    AppleTV: "AppleTV/AppleTV",
+    ParamountPlus: "ParamountPlus/ParamountPlus",
+    Peacock: "Peacock/Peacock",
+    DiscoveryPlus: "DiscoveryPlus/DiscoveryPlus",
+    Instagram: "Instagram/Instagram",
     GitHub: "GitHub/GitHub",
-    Google: "Google/Google", Apple: "Apple/Apple", Microsoft: "Microsoft/Microsoft",
-    Speedtest: "Speedtest/Speedtest", Spotify: "Spotify/Spotify",
-    OpenAI: "OpenAI/OpenAI", Claude: "Claude/Claude", Gemini: "Gemini/Gemini",
-    China: "China/China", ChinaIPs: "ChinaIPs/ChinaIPs_Classical", Global: "Global/Global"
+    Google: "Google/Google",
+    Apple: "Apple/Apple",
+    Microsoft: "Microsoft/Microsoft",
+    Speedtest: "Speedtest/Speedtest",
+    Spotify: "Spotify/Spotify",
+    OpenAI: "OpenAI/OpenAI",
+    Claude: "Claude/Claude",
+    Gemini: "Gemini/Gemini",
+    China: "China/China",
+    ChinaIPs: "ChinaIPs/ChinaIPs",
+    Global: "Global/Global",
+    Formula1: customBase + "Formula1.yaml",
+    EmbyCustom: customBase + "Emby.yaml",
+    CommonDirect: customBase + "CommonDirect.yaml",
+    CommonProxy: customBase + "CommonProxy.yaml"
   };
   params["rule-providers"] = Object.fromEntries(Object.entries(providerPaths).map(([name, path]) => [name, {
     type: "http", behavior: "classical", format: "yaml", interval: 86400,
-    path: "./ruleset/" + name + ".yaml", url: base + path + ".yaml"
+    path: "./ruleset/" + name + ".yaml", url: path.startsWith("http") ? path : base + path + ".yaml"
   }]));
 
   params.rules = [
     "RULE-SET,Lan,DIRECT",
-    // 本地例外优先于远程规则；Clash 不支持 QX 的 USER-AGENT 规则。
+    // > Apple 推送 (本地例外优先于远程规则)
     "DOMAIN-SUFFIX,push.apple.com,Manual",
     "DOMAIN-SUFFIX,akadns.net,Manual",
     "DOMAIN-KEYWORD,apple.com.edgekey.net,Manual",
@@ -88,40 +112,19 @@ function main(params) {
     "IP-CIDR6,2403:300:a42::/48,Manual,no-resolve",
     "IP-CIDR6,2403:300:a51::/48,Manual,no-resolve",
     "IP-CIDR6,2a01:b740:a42::/48,Manual,no-resolve",
+    // > 个人手动切换规则
     "DOMAIN-SUFFIX,91porny.com,Manual",
+    "DOMAIN-SUFFIX,jiuse2.cloud,Manual",
     "DOMAIN-KEYWORD,jiuse,Manual",
     "DOMAIN-SUFFIX,t66y.com,Manual",
-    "DOMAIN,emby.oceancloud.asia,Emby",
-    "DOMAIN,panel.aemby.de,Emby",
-    "DOMAIN,test.1huanlesap02.top,EmbyVip",
-    "DOMAIN,best.28.al,Emby",
-    "DOMAIN,test.startspoint.com,Emby",
-    ...["bitmovin.com", "formula1.com", "opin.media", "formula1.my.site.com",
-      "f1accountprod.report-uri.com", "formula1.my.salesforce-scrt.com", "tiled.media",
-      "mobile-collector.newrelic.com", "f1prodlive.akamaized.net",
-      "d2n9h2wits23hf.cloudfront.net", "f1esports.com", "f1manager.com",
-      "f1play.com", "f1.ascendon.tv"].map(domain => `DOMAIN-SUFFIX,${domain},Manual`),
-    // 自维护列表与 QX 同源；逐条转为 Clash 规则，避免直接加载 QX 语法。
-    "DOMAIN-SUFFIX,emby.wtf,Emby",
-    "DOMAIN-SUFFIX,handoutv.top,EmbyVip",
-    "DOMAIN-SUFFIX,micu.hk,EmbyVip",
-    "DOMAIN-SUFFIX,beebi.org,EmbyVip",
-    "DOMAIN-SUFFIX,rousi.zip,CommonDirect",
-    "DOMAIN-SUFFIX,ptzone.xyz,CommonDirect",
-    "DOMAIN-SUFFIX,v2ex.com,CommonProxy",
-    "DOMAIN-SUFFIX,linux.do,CommonProxy",
+    "DOMAIN-KEYWORD,aspriny,Manual",
+    // > 本地广告/追踪拦截
+    "DOMAIN,118.89.204.198,REJECT",
+    "DOMAIN-KEYWORD,118.89.204.198,REJECT",
     "IP-CIDR,118.89.204.198/32,REJECT,no-resolve",
     "DOMAIN,appcloud2.in.zhihu.com,REJECT",
     "DOMAIN,mqtt.zhihu.com,REJECT",
     "DOMAIN,sugar.zhihu.com,REJECT",
-    "DOMAIN-SUFFIX,95599.cn,DIRECT",
-    "DOMAIN-SUFFIX,abchina.com,DIRECT",
-    "DOMAIN-SUFFIX,bscabank.com,DIRECT",
-    "DOMAIN-SUFFIX,openaboc.cn,DIRECT",
-    "DOMAIN-SUFFIX,openaboc.com,DIRECT",
-    "DOMAIN-SUFFIX,openaboc.com.cn,DIRECT",
-    "DOMAIN,ad.12306.cn,DIRECT",
-    "DOMAIN,sdkapp.uve.weibo.com,DIRECT",
     "DOMAIN-KEYWORD,pangolin,REJECT",
     "DOMAIN-KEYWORD,pglstat,REJECT",
     "IP-CIDR,180.76.76.200/32,REJECT,no-resolve",
@@ -135,6 +138,52 @@ function main(params) {
     "DOMAIN,hub5emu.v6.shub.sandai.net,REJECT",
     "DOMAIN,hub5btmain.v6.shub.sandai.net,REJECT",
     "IP-CIDR,203.107.1.0/24,REJECT,no-resolve",
+    // > 国内银行与防误杀直连
+    "DOMAIN-SUFFIX,95599.cn,DIRECT",
+    "DOMAIN-SUFFIX,abchina.com,DIRECT",
+    "DOMAIN-SUFFIX,bscabank.com,DIRECT",
+    "DOMAIN-SUFFIX,openaboc.cn,DIRECT",
+    "DOMAIN-SUFFIX,openaboc.com,DIRECT",
+    "DOMAIN-SUFFIX,openaboc.com.cn,DIRECT",
+    "DOMAIN,ad.12306.cn,DIRECT",
+    "DOMAIN,sdkapp.uve.weibo.com,DIRECT",
+    // > AI 与流媒体补充域名
+    "DOMAIN-SUFFIX,x.ai,OpenAI",
+    "DOMAIN-SUFFIX,litix.io,Streaming",
+    "DOMAIN-SUFFIX,discomax.com,Streaming",
+    "DOMAIN-SUFFIX,brightline.tv,Streaming",
+    "DOMAIN,play-edge.itunes.apple.com,Streaming",
+    "DOMAIN,known-issues.apple.com,Streaming",
+    "DOMAIN,hls-amt.itunes.apple.com,Streaming",
+    "DOMAIN,linear.tv.apple.com,Streaming",
+    // > 自维护分流列表 (内联 + RULE-SET 双保险)
+    "DOMAIN-SUFFIX,emby.wtf,Emby",
+    "DOMAIN-SUFFIX,oceancloud.asia,Emby",
+    "DOMAIN,emby.oceancloud.asia,Emby",
+    "DOMAIN,panel.aemby.de,Emby",
+    "DOMAIN,best.28.al,Emby",
+    "DOMAIN,test.startspoint.com,Emby",
+    "DOMAIN-SUFFIX,rousi.zip,CommonDirect",
+    "DOMAIN-SUFFIX,ptzone.xyz,CommonDirect",
+    "DOMAIN-SUFFIX,appstorrent.ru,CommonDirect",
+    "DOMAIN-SUFFIX,addthis.com,CommonDirect",
+    "DOMAIN-SUFFIX,steamcontent.com,CommonDirect",
+    "DOMAIN-SUFFIX,steamserver.net,CommonDirect",
+    "DOMAIN-SUFFIX,handoutv.top,CommonDirect",
+    "DOMAIN-SUFFIX,handoumedia.top,CommonDirect",
+    "DOMAIN-SUFFIX,micu.hk,CommonDirect",
+    "DOMAIN-SUFFIX,beebi.org,CommonDirect",
+    "DOMAIN-SUFFIX,1huanlesap02.top,CommonDirect",
+    "DOMAIN,test.1huanlesap02.top,CommonDirect",
+    "DOMAIN-SUFFIX,v2ex.com,CommonProxy",
+    "DOMAIN-SUFFIX,linux.do,CommonProxy",
+    "DOMAIN-SUFFIX,nodeseek.com,CommonProxy",
+    "RULE-SET,Formula1,Formula1",
+    "RULE-SET,EmbyCustom,Emby",
+    "RULE-SET,CommonDirect,CommonDirect",
+    "RULE-SET,CommonProxy,CommonProxy",
+    // > 远程规则集
+    "RULE-SET,Emby,Emby",
     "RULE-SET,GameDownloadCN,GameDownloadCN",
     "RULE-SET,Game,Game",
     "RULE-SET,TikTok,TikTok",
@@ -152,6 +201,7 @@ function main(params) {
     "RULE-SET,OpenAI,OpenAI",
     "RULE-SET,Claude,OpenAI",
     "RULE-SET,Gemini,OpenAI",
+    // > 私有网段与国内外兜底
     "IP-CIDR,17.0.0.0/8,DIRECT,no-resolve",
     "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
     "IP-CIDR,127.0.0.0/8,DIRECT,no-resolve",
