@@ -1,5 +1,15 @@
 // Clash Verge JavaScript 覆写脚本（不是静态 YAML）
 function main(params) {
+  params.dns = {
+    enable: true,
+    listen: "0.0.0.0:1053",
+    ipv6: false,
+    "enhanced-mode": "fake-ip",
+    "fake-ip-range": "198.18.0.1/16",
+    "default-nameserver": ["223.5.5.5", "119.29.29.29"],
+    nameserver: ["https://dns.alidns.com/dns-query"]
+  };
+
   const icons = "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/";
   const nodeNames = [...new Set((params.proxies || []).map(proxy => proxy.name))];
   const providerNames = Object.keys(params["proxy-providers"] || {});
@@ -21,17 +31,25 @@ function main(params) {
     group("Manual", "Available", ["Proxy"])
   ];
   const serviceGroups = [
-    ["YouTube", "YouTube"], ["Telegram", "Telegram"],
-    ["Streaming", "Streaming"], ["Instagram", "Instagram"],
-    ["GitHub", "GitHub", true],
-    ["OpenAI", "Bot"], ["TikTok", "TikTok_1", true],
-    ["Emby", "Emby", true],
+    ["YouTube", "YouTube"],
+    ["Telegram", "Telegram"],
+    ["AI", "ChatGPT"],
+    ["Google", "Google_Search", true],
     ["Formula1", "Streaming"],
-    ["CommonDirect", "China", true], ["CommonProxy", "Global"],
-    ["漏网之鱼", "Final"], ["Google", "Google_Search", true],
-    ["Apple", "Apple", true], ["Microsoft", "Microsoft", true],
-    ["Speedtest", "Speedtest", true], ["Spotify", "Spotify", true],
-    ["GameDownloadCN", "Steam", true], ["Game", "Steam", true]
+    ["Streaming", "Streaming"],
+    ["Emby", "Emby", true],
+    ["CommonDirect", "China", true],
+    ["CommonProxy", "Global"],
+    ["TikTok", "TikTok_1", true],
+    ["Instagram", "Instagram"],
+    ["GitHub", "GitHub", true],
+    ["Apple", "Apple", true],
+    ["Microsoft", "Microsoft", true],
+    ["Speedtest", "Speedtest", true],
+    ["Spotify", "Spotify", true],
+    ["GameDownloadCN", "Steam", true],
+    ["Game", "Steam", true],
+    ["漏网之鱼", "Final"]
   ];
   for (const [name, icon, directFirst] of serviceGroups) {
     groups.push(group(name, icon, directFirst ? ["DIRECT", "Proxy", "Manual"] : ["Proxy", "Manual", "DIRECT"]));
@@ -148,7 +166,7 @@ function main(params) {
     "DOMAIN,ad.12306.cn,DIRECT",
     "DOMAIN,sdkapp.uve.weibo.com,DIRECT",
     // > AI 与流媒体补充域名
-    "DOMAIN-SUFFIX,x.ai,OpenAI",
+    "DOMAIN-SUFFIX,x.ai,AI",
     "DOMAIN-SUFFIX,litix.io,Streaming",
     "DOMAIN-SUFFIX,discomax.com,Streaming",
     "DOMAIN-SUFFIX,brightline.tv,Streaming",
@@ -198,9 +216,9 @@ function main(params) {
     "RULE-SET,Microsoft,Microsoft",
     "RULE-SET,Speedtest,Speedtest",
     "RULE-SET,Spotify,Spotify",
-    "RULE-SET,OpenAI,OpenAI",
-    "RULE-SET,Claude,OpenAI",
-    "RULE-SET,Gemini,OpenAI",
+    "RULE-SET,OpenAI,AI",
+    "RULE-SET,Claude,AI",
+    "RULE-SET,Gemini,AI",
     // > 私有网段与国内外兜底
     "IP-CIDR,17.0.0.0/8,DIRECT,no-resolve",
     "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
