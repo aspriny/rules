@@ -1,0 +1,19 @@
+# NAME: CommonDirect
+
+# pt
+DOMAIN-SUFFIX,rousi.zip
+DOMAIN-SUFFIX,ptzone.xyz
+
+# direct
+DOMAIN-SUFFIX,appstorrent.ru
+DOMAIN-SUFFIX,addthis.com
+DOMAIN-SUFFIX,steamcontent.com
+DOMAIN-SUFFIX,steamserver.net
+
+# emby vip (merged from EmbyVIP.list)
+DOMAIN-SUFFIX,handoutv.top
+DOMAIN-SUFFIX,handoumedia.top
+DOMAIN-SUFFIX,micu.hk
+DOMAIN-SUFFIX,beebi.org
+DOMAIN-SUFFIX,1huanlesap02.top
+DOMAIN,test.1huanlesap02.top
