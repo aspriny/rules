@@ -23,6 +23,7 @@ function main(params) {
   const serviceGroups = [
     ["YouTube", "YouTube"], ["Telegram", "Telegram"],
     ["Streaming", "Streaming"], ["Instagram", "Instagram"],
+    ["GitHub", "GitHub", true],
     ["OpenAI", "Bot"], ["TikTok", "TikTok_1", true],
     ["Emby", "Emby", true], ["EmbyVip", "Emby", true],
     ["CommonDirect", "China", true], ["CommonProxy", "Global", true],
@@ -61,6 +62,7 @@ function main(params) {
     HBO: "HBO/HBO", Hulu: "Hulu/Hulu", AppleTV: "AppleTV/AppleTV",
     ParamountPlus: "ParamountPlus/ParamountPlus", Peacock: "Peacock/Peacock",
     DiscoveryPlus: "DiscoveryPlus/DiscoveryPlus", Instagram: "Instagram/Instagram",
+    GitHub: "GitHub/GitHub",
     Google: "Google/Google", Apple: "Apple/Apple", Microsoft: "Microsoft/Microsoft",
     Speedtest: "Speedtest/Speedtest", Spotify: "Spotify/Spotify",
     OpenAI: "OpenAI/OpenAI", Claude: "Claude/Claude", Gemini: "Gemini/Gemini",
@@ -141,6 +143,7 @@ function main(params) {
     ...["Netflix", "PrimeVideo", "Disney", "HBO", "Hulu", "AppleTV",
       "ParamountPlus", "Peacock", "DiscoveryPlus"].map(name => `RULE-SET,${name},Streaming`),
     "RULE-SET,Instagram,Instagram",
+    "RULE-SET,GitHub,GitHub",
     "RULE-SET,Google,Google",
     "RULE-SET,Apple,Apple",
     "RULE-SET,Microsoft,Microsoft",
