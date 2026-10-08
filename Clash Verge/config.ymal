@@ -181,6 +181,7 @@ function main(params) {
     "DOMAIN,panel.aemby.de,Emby",
     "DOMAIN,best.28.al,Emby",
     "DOMAIN,test.startspoint.com,Emby",
+    "DOMAIN-SUFFIX,dusheng.xyz,Emby",
     "DOMAIN-SUFFIX,rousi.zip,CommonDirect",
     "DOMAIN-SUFFIX,ptzone.xyz,CommonDirect",
     "DOMAIN-SUFFIX,appstorrent.ru,CommonDirect",
