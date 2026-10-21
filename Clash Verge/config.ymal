@@ -197,6 +197,8 @@ function main(params) {
     "DOMAIN-SUFFIX,linux.do,CommonProxy",
     "DOMAIN-SUFFIX,nodeseek.com,CommonProxy",
     "DOMAIN-SUFFIX,appstorrent.ru,CommonProxy",
+    "DOMAIN-SUFFIX,reddit.com,CommonProxy",
+    "DOMAIN-SUFFIX,redd.it,CommonProxy",
     "RULE-SET,Formula1,Formula1",
     "RULE-SET,EmbyCustom,Emby",
     "RULE-SET,CommonDirect,CommonDirect",
