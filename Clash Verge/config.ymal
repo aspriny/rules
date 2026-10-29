@@ -34,7 +34,7 @@ function main(params) {
     ["YouTube", "YouTube"],
     ["Telegram", "Telegram"],
     ["AI", "ChatGPT"],
-    ["Google", "Google_Search", true],
+    ["Google", "Google_Search"],
     ["Formula1", "Streaming"],
     ["Streaming", "Streaming"],
     ["Emby", "Emby", true],
@@ -48,7 +48,7 @@ function main(params) {
     ["Speedtest", "Speedtest", true],
     ["Spotify", "Spotify", true],
     ["GameDownloadCN", "Steam", true],
-    ["Game", "Steam", true],
+    ["Game", "Steam", false],
     ["漏网之鱼", "Final"]
   ];
   for (const [name, icon, directFirst] of serviceGroups) {
@@ -199,6 +199,13 @@ function main(params) {
     "DOMAIN-SUFFIX,appstorrent.ru,CommonProxy",
     "DOMAIN-SUFFIX,reddit.com,CommonProxy",
     "DOMAIN-SUFFIX,redd.it,CommonProxy",
+    "DOMAIN-SUFFIX,dl.playstation.net,GameDownloadCN",
+    "DOMAIN-SUFFIX,update.playstation.net,GameDownloadCN",
+    "DOMAIN-SUFFIX,playstation.com,Game",
+    "DOMAIN-SUFFIX,playstation.net,Game",
+    "DOMAIN-SUFFIX,playstationnetwork.com,Game",
+    "DOMAIN-SUFFIX,sonyentertainmentnetwork.com,Game",
+    "DOMAIN-SUFFIX,sony.com,Game",
     "RULE-SET,Formula1,Formula1",
     "RULE-SET,EmbyCustom,Emby",
     "RULE-SET,CommonDirect,CommonDirect",
