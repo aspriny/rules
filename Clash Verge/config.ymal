@@ -7,7 +7,10 @@ function main(params) {
     "enhanced-mode": "fake-ip",
     "fake-ip-range": "198.18.0.1/16",
     "default-nameserver": ["223.5.5.5", "119.29.29.29"],
-    nameserver: ["https://dns.alidns.com/dns-query"]
+    nameserver: [
+      "https://dns.alidns.com/dns-query",
+      "https://1.1.1.1/dns-query"
+    ]
   };
 
   const icons = "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/";
@@ -37,22 +40,28 @@ function main(params) {
     ["Google", "Google_Search"],
     ["Formula1", "Streaming"],
     ["Streaming", "Streaming"],
-    ["Emby", "Emby", true],
-    ["CommonDirect", "China", true],
+    ["Emby", "Emby", "directFirst"],
+    ["CommonDirect", "China", "directFirst"],
     ["CommonProxy", "Global"],
-    ["TikTok", "TikTok_1", true],
+    ["TikTok", "TikTok_1"],
     ["Instagram", "Instagram"],
-    ["GitHub", "GitHub", true],
-    ["Apple", "Apple", true],
-    ["Microsoft", "Microsoft", true],
-    ["Speedtest", "Speedtest", true],
-    ["Spotify", "Spotify", true],
-    ["GameDownloadCN", "Steam", true],
-    ["Game", "Steam", false],
-    ["漏网之鱼", "Final"]
+    ["GitHub", "GitHub", "directFirst"],
+    ["Apple", "Apple", "directFirst"],
+    ["Microsoft", "Microsoft", "directFirst"],
+    ["Speedtest", "Speedtest", "directFirst"],
+    ["Spotify", "Spotify", "directFirst"],
+    ["GameDownloadCN", "Steam", "directFirst"],
+    ["Game", "Steam"],
+    ["漏网之鱼", "Final", "fallback"]
   ];
-  for (const [name, icon, directFirst] of serviceGroups) {
-    groups.push(group(name, icon, directFirst ? ["DIRECT", "Proxy", "Manual"] : ["Proxy", "Manual", "DIRECT"]));
+  for (const [name, icon, mode] of serviceGroups) {
+    let opts = ["Proxy", "Manual"];
+    if (mode === "directFirst") {
+      opts = ["DIRECT", "Proxy", "Manual"];
+    } else if (mode === "fallback") {
+      opts = ["Proxy", "Manual", "DIRECT"];
+    }
+    groups.push(group(name, icon, opts));
   }
 
   // 与 QuantumultX 的启用地区分组对应；没有匹配节点时不创建空组。
