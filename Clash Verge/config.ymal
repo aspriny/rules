@@ -64,22 +64,6 @@ function main(params) {
     }
     groups.push(group(name, icon, opts));
   }
-
-  // 与 QuantumultX 的启用地区分组对应；没有匹配节点时不创建空组。
-  const regions = [
-    ["🇭🇰Hong Kong", /香港|HK|Hong|🇭🇰/i, "Hong_Kong"],
-    ["🇯🇵Japan", /日本|JP|Japan|🇯🇵/i, "Japan"],
-    ["🇸🇬Singapore", /新加坡|狮城|SG|legend|Singapore|🇸🇬/i, "Singapore"],
-    ["🇺🇸United States", /美国|美國|US|dcc|States|American|🇺🇸/i, "United_States"],
-    ["🇮🇳India", /印度|IN|dzire|India|🇮🇳/i, "India"],
-    ["🇩🇪Germany", /德国|德|DE|netcup|Germany|🇩🇪/i, "Germany"],
-    ["🇬🇧United Kingdom", /英国|英|UK|United Kingdom|🇬🇧/i, "United_Kingdom"],
-    ["🇳🇱Netherlands", /荷兰|荷|NL|ams|Netherlands|🇳🇱/i, "Netherlands"]
-  ];
-  for (const [name, regex, icon] of regions) {
-    const matched = nodeNames.filter(node => regex.test(node) && !/专线|手游|游戏|IPLC|IEPL|game/i.test(node));
-    if (matched.length) groups.push({ name, type: "select", icon: icons + icon + ".png", proxies: matched });
-  }
   params["proxy-groups"] = groups;
 
   // 统一使用 blackmatrix7 Clash classical rule-provider 与自维护 filterList
